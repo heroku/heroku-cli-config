@@ -1,5 +1,5 @@
 {
-  "name": "heroku-cli-config",
+  "name": "@heroku-cli/config",
   "version": "0.0.0",
   "files": [
     "lib"
@@ -10,27 +10,32 @@
   "license": "MIT",
   "dependencies": {
     "@heroku-cli/command": "^7.0.12",
-    "cli-ux": "^2.0.21",
+    "@types/lodash": "^4.14.92",
+    "cli-ux": "^3.0.0-alpha.3",
+    "date-fns": "^1.29.0",
+    "lodash": "^4.17.4",
+    "luxon": "^0.3.1",
+    "rxjs": "^5.5.6",
+    "shell-escape": "^0.2.0",
     "tslib": "^1.8.1"
   },
   "devDependencies": {
     "@heroku-cli/tslint": "^1.1.2",
-    "@types/jest": "^22.0.1",
     "@types/ansi-styles": "^2.0.30",
-    "@types/node": "^8.0.58",
+    "@types/luxon": "^0.2.2",
+    "@types/node": "^9.3.0",
+    "@types/supports-color": "^3.1.0",
     "husky": "^0.14.3",
-    "jest": "^22.0.4",
     "np": "^2.18.3",
-    "tslint": "^5.8.0",
     "prettier": "^1.9.2",
-    "ts-jest": "^22.0.0",
+    "tslint": "^5.8.0",
     "typescript": "^2.6.2"
   },
   "cli-engine": {
     "commands": "./lib/commands",
     "topics": {
-      "heroku-cli-config": {
-        "description": "says hello (example plugin)"
+      "config": {
+        "description": "get/set config vars on Heroku apps"
       }
     }
   },
@@ -42,7 +47,7 @@
     "precommit": "cli-engine-util",
     "prepare": "cli-engine-util",
     "pretest": "tsc",
-    "test": "jest",
+    "test": "cli-engine-util lint",
     "release": "np"
   }
 }
