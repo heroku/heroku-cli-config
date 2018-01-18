@@ -108,7 +108,12 @@ export default class ConfigIndex extends Command {
     function configLastUpdated(key: string): Rx.Observable<Date | null> {
       return releases$
         .map(release => {
-          const match = release.description.match(/^Set ((?:\w+(?:, )?)+) config var/) as [string, string]
+          let match = release.description.match(/^Set ((?:\w+(?:, )?)+) config var/) as [string, string]
+          if (!match) match = release.description.match(/^Update ((?:\w+(?:, )?)+) by/) as [string, string]
+          if (!match)
+            match = release.description.match(/^Attach ((?:\w+(?:, )?)+) (?:resource|\(@ref:)/) as [string, string]
+          // if (match) console.dir([match[0], match[1]])
+          // else console.dir(release.description)
           let configVars: string[] = []
           if (match) configVars = match[1].split(',').map(s => s.trim())
           return {
@@ -116,15 +121,24 @@ export default class ConfigIndex extends Command {
             configVars,
           }
         })
-        .first(r => r.configVars.includes(key), r => new Date(r.release.updated_at) as any, null)
+        .first(
+          r => {
+            for (let k of r.configVars) {
+              if (k === key) return true
+              if (`${k}_URL` === key) return true
+            }
+            return false
+          },
+          r => new Date(r.release.created_at || r.release.updated_at) as any,
+          null,
+        )
     }
 
     await Rx.Observable.from(Object.entries(configVars))
       .mergeMap(([key]) => configLastUpdated(key), ([key, value], lastUpdated) => ({ key, value, lastUpdated }))
       .reduce((arr, config) => arr.concat([config]), [])
       .do(v => {
-        _.sortBy(v, 'key')
-        cli.table(v, {
+        cli.table(_.sortBy(v, 'key'), {
           printHeader: false,
           columns: [
             { key: 'key' },
