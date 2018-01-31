@@ -145,7 +145,7 @@ export default class ConfigIndex extends Command {
             // {key: 'value'},
             { key: 'lastUpdated', format: relativeDate },
           ],
-        })
+        } as any)
       })
       .toPromise()
   }
