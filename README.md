@@ -1,0 +1,1 @@
+Package was moved to core: https://github.com/heroku/cli/tree/master/packages/config
